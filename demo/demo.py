@@ -16,6 +16,7 @@ from detectron2.utils.logger import setup_logger
 
 from predictor import VisualizationDemo
 
+from detectron2.projects import point_rend
 # constants
 WINDOW_NAME = "COCO detections"
 
@@ -23,6 +24,7 @@ WINDOW_NAME = "COCO detections"
 def setup_cfg(args):
     # load config from file and command-line arguments
     cfg = get_cfg()
+    point_rend.add_pointrend_config(cfg)
     # To use demo for Panoptic-DeepLab, please uncomment the following two lines.
     # from detectron2.projects.panoptic_deeplab import add_panoptic_deeplab_config  # noqa
     # add_panoptic_deeplab_config(cfg)
