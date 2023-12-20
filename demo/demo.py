@@ -113,15 +113,26 @@ if __name__ == "__main__":
             img = read_image(path, format="BGR")
             start_time = time.time()
             predictions, visualized_output = demo.run_on_image(img)
+            
             contours = []
             for pred_mask in predictions['instances'].pred_masks:
                 mask = pred_mask.numpy().astype('uint8')
                 contour, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
                 contours.append(contour[0].tolist())
-
+            
             json_object = json.dumps(contours)
             with open("masks{}.json".format(path.split("\\")[-1]), "w") as outfile:
                 outfile.write(json_object)
+                
+            #boxes = []
+            #for pred_box in predictions['instances'].pred_boxes:
+            #    box = pred_box.numpy().astype('uint8')
+            #    boxes.append(box[0].tolist())
+            #    
+            #json_object = json.dumps(boxes)
+            #with open("boxes{}.json".format(path.split("\\")[-1]), "w") as outfile:
+            #    outfile.write(json_object)
+                
             logger.info(
                 "{}: {} in {:.2f}s".format(
                     path,
@@ -131,9 +142,7 @@ if __name__ == "__main__":
                     time.time() - start_time,
                 )
             )
-
-           
-                
+                          
             if args.output:
                 if os.path.isdir(args.output):
                     assert os.path.isdir(args.output), args.output
