@@ -128,6 +128,9 @@ if __name__ == "__main__":
             with open("panoptic{}.json".format(path.split("\\")[-1]), "w") as outfile:
                outfile.write(json_object)
                 
+            json_object = json.dumps(predictions["panoptic_seg"][1])
+            with open("panoptic_seg_info{}.json".format(path.split("\\")[-1]), "w") as outfile:
+               outfile.write(json_object)
             #boxes = []
             #for pred_box in predictions['instances'].pred_boxes:
             #    box = pred_box.numpy().astype('uint8')
