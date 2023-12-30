@@ -114,23 +114,35 @@ if __name__ == "__main__":
             start_time = time.time()
             predictions, visualized_output = demo.run_on_image(img)
             
-            contours = []
-            for pred_mask in predictions['instances'].pred_masks:
-                mask = pred_mask.numpy().astype('uint8')
-                contour, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-                contours.append(contour[0].tolist())
+            if "panoptic_seg" in predictions: 
+                json_object = json.dumps(predictions["panoptic_seg"][0].tolist())
+                with open("panoptic{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                   outfile.write(json_object)
+
+                classes = []
+                for seg_info in predictions["panoptic_seg"][1]:
+                    classes.append(seg_info["category_id"])
+                json_object = json.dumps(classes)
+                with open("classes{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                   outfile.write(json_object)
+            else:
+                contours = []
+                for pred_mask in predictions['instances'].pred_masks:
+                    mask = pred_mask.numpy().astype('uint8')
+                    contour, _ = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+                    contours.append(contour[0].tolist())
+                
+                json_object = json.dumps(contours)
+                with open("masks{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                    outfile.write(json_object)
+
+                classes = predictions['instances'].pred_classes.tolist()
+                
+                json_object = json.dumps(classes)
+                with open("classes{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                    outfile.write(json_object)
+                
             
-            json_object = json.dumps(contours)
-            with open("masks{}.json".format(path.split("\\")[-1]), "w") as outfile:
-                outfile.write(json_object)
-                
-            json_object = json.dumps(predictions["panoptic_seg"][0].tolist())
-            with open("panoptic{}.json".format(path.split("\\")[-1]), "w") as outfile:
-               outfile.write(json_object)
-                
-            json_object = json.dumps(predictions["panoptic_seg"][1])
-            with open("panoptic_seg_info{}.json".format(path.split("\\")[-1]), "w") as outfile:
-               outfile.write(json_object)
             #boxes = []
             #for pred_box in predictions['instances'].pred_boxes:
             #    box = pred_box.numpy().astype('uint8')
