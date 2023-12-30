@@ -133,7 +133,7 @@ if __name__ == "__main__":
                     contours.append(contour[0].tolist())
                 
                 json_object = json.dumps(contours)
-                with open("masks_{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("contours_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                     outfile.write(json_object)
 
                 classes = predictions['instances'].pred_classes.tolist()
