@@ -116,14 +116,14 @@ if __name__ == "__main__":
             
             if "panoptic_seg" in predictions: 
                 json_object = json.dumps(predictions["panoptic_seg"][0].tolist())
-                with open("panoptic{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("panoptic_masks_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                    outfile.write(json_object)
 
                 classes = []
                 for seg_info in predictions["panoptic_seg"][1]:
                     classes.append(seg_info["category_id"])
                 json_object = json.dumps(classes)
-                with open("classes{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("panoptic_classes_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                    outfile.write(json_object)
             else:
                 contours = []
@@ -133,13 +133,13 @@ if __name__ == "__main__":
                     contours.append(contour[0].tolist())
                 
                 json_object = json.dumps(contours)
-                with open("masks{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("masks_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                     outfile.write(json_object)
 
                 classes = predictions['instances'].pred_classes.tolist()
                 
                 json_object = json.dumps(classes)
-                with open("classes{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("classes_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                     outfile.write(json_object)
                 
             
