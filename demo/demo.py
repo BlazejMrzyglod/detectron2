@@ -108,6 +108,8 @@ if __name__ == "__main__":
         if len(args.input) == 1:
             args.input = glob.glob(os.path.expanduser(args.input[0]))
             assert args.input, "The input path(s) was not found"
+        if not os.path.exists("jsonFiles"):
+            os.makedirs("jsonFiles")
         for path in tqdm.tqdm(args.input, disable=not args.output):
             # use PIL, to be consistent with evaluation
             img = read_image(path, format="BGR")
@@ -116,14 +118,14 @@ if __name__ == "__main__":
             
             if "panoptic_seg" in predictions: 
                 json_object = json.dumps(predictions["panoptic_seg"][0].tolist())
-                with open("panoptic_masks_{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("jsonFiles\\panoptic_masks_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                    outfile.write(json_object)
 
                 classes = []
                 for seg_info in predictions["panoptic_seg"][1]:
                     classes.append(seg_info["category_id"])
                 json_object = json.dumps(classes)
-                with open("panoptic_classes_{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("jsonFiles\\panoptic_classes_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                    outfile.write(json_object)
             else:
                 contours = []
@@ -133,13 +135,13 @@ if __name__ == "__main__":
                     contours.append(contour[0].tolist())
                 
                 json_object = json.dumps(contours)
-                with open("contours_{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("jsonFiles\\contours_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                     outfile.write(json_object)
 
                 classes = predictions['instances'].pred_classes.tolist()
                 
                 json_object = json.dumps(classes)
-                with open("classes_{}.json".format(path.split("\\")[-1]), "w") as outfile:
+                with open("jsonFiles\\classes_{}.json".format(path.split("\\")[-1]), "w") as outfile:
                     outfile.write(json_object)
                 
             
